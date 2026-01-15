@@ -1,4 +1,4 @@
-import { GitHubBanner, Refine } from "@refinedev/core";
+import { Authenticated, GitHubBanner, Refine } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 
@@ -9,11 +9,13 @@ import { dataProvider, liveProvider, authProvider } from "./providers";
 import { Home, ForgotPassword, Login, Register } from "./pages";
 
 import routerProvider, {
+    CatchAllNavigate,
     DocumentTitleHandler,
     UnsavedChangesNotifier,
 } from "@refinedev/react-router";
 import { App as AntdApp } from "antd";
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router";
+import Layout from "./components/layout";
 
 function App() {
     return (
@@ -36,7 +38,6 @@ function App() {
                             }}
                         >
                             <Routes>
-                                <Route index element={<Home />} />
                                 <Route
                                     path="/register"
                                     element={<Register />}
@@ -46,8 +47,24 @@ function App() {
                                     path="/forgot-password"
                                     element={<ForgotPassword />}
                                 />
+                                <Route
+                                    element={
+                                        <Authenticated
+                                            key="authenticated-layout"
+                                            fallback={
+                                                <CatchAllNavigate to="/login" />
+                                            }
+                                        >
+                                            {" "}
+                                            <Layout>
+                                                <Outlet />
+                                            </Layout>
+                                        </Authenticated>
+                                    }
+                                >
+                                    <Route index element={<Home />} />
+                                </Route>
                             </Routes>
-
                             <RefineKbar />
                             <UnsavedChangesNotifier />
                             <DocumentTitleHandler />
