@@ -19,3 +19,17 @@ export const getDateColor = (args: {
 
     return args.defaultColor ?? "default";
 };
+
+export const getDate = (date?: string): string => {
+    if (!date) {
+        return "-";
+    }
+
+    const parsedDate = dayjs(date);
+
+    if (!parsedDate.isValid()) {
+        return "-";
+    }
+
+    return parsedDate.format("YYYY. MM. DD");
+};
